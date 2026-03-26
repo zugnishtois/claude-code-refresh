@@ -2,6 +2,8 @@
 
 Cut your Claude Code rate limit wait time from hours to minutes.
 
+![Dashboard](screenshot.png)
+
 ## The Problem
 
 Claude Code (Pro and Max plans) has a rate limit based on a **4-hour rolling window**. The window starts from your **first request**.
