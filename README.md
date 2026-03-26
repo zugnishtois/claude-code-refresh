@@ -1,14 +1,31 @@
 # Claude Code Refresh
 
-Keep your Claude Code rate limit window alive by automatically pinging the CLI on a schedule.
+Cut your Claude Code rate limit wait time from hours to minutes.
 
 ## The Problem
 
-Claude Code (Pro and Max plans) has a rate limit that resets on a rolling window — but the window only starts counting from your **first usage**. If you don't use Claude Code for several hours, you lose that idle time completely. When you finally sit down to work, your rate limit window starts fresh and you get less total usage during your session.
+Claude Code (Pro and Max plans) has a rate limit based on a **4-hour rolling window**. The window starts from your **first request**.
+
+Here's what happens without this tool:
+
+- You arrive at **9:00 AM** and start coding with Claude
+- By **10:00 AM** you've used up your limit
+- The window started at 9:00, so it resets at **1:00 PM**
+- You wait **4 hours** doing nothing
 
 ## The Solution
 
-This app runs `claude -p hi` every ~4 hours in the background. That tiny ping costs almost nothing against your limit, but it **keeps the rolling window ticking** so that by the time you start your real work, old usage has already fallen off the window. The result: more available capacity when you actually need it.
+This tool sends a tiny ping (`claude -p hi`) every ~4 hours in the background. That starts the rolling window early — before you even sit down to work.
+
+Here's what happens with this tool:
+
+- The tool pings Claude at **6:44 AM** while you're still asleep
+- You arrive at **9:00 AM** and start coding
+- By **10:00 AM** you've used up your limit
+- But the window started at 6:44, so it resets at **10:44 AM**
+- You wait **44 minutes** instead of 4 hours
+
+The ping costs almost nothing against your limit but shifts the entire window in your favor.
 
 ## Features
 
@@ -19,9 +36,9 @@ This app runs `claude -p hi` every ~4 hours in the background. That tiny ping co
 - **English / Hebrew UI**
 - **Docker-ready** with persistent storage
 
-## Quick Start
+## Run It Your Way
 
-### Local
+### Locally
 
 ```bash
 npm install
@@ -37,10 +54,18 @@ docker build -t claude-code-refresh .
 docker run -p 3000:3000 -v claude_data:/data claude-code-refresh
 ```
 
-You'll need to authenticate Claude Code inside the container:
+### Host It (Fly.io, Railway, any VPS)
+
+Deploy the Docker image to any always-on platform. As long as it stays running, your rate limit window keeps rolling.
+
+You'll need to authenticate Claude Code once:
 
 ```bash
+# Docker
 docker exec -it <container> claude login
+
+# Fly.io
+fly ssh console -C "claude login"
 ```
 
 ## Environment Variables
@@ -51,16 +76,7 @@ docker exec -it <container> claude login
 | `DATA_DIR` | `./data` | Persistent data directory |
 | `DASHBOARD_PASSWORD` | *(none)* | Set to enable login protection |
 
-## How It Works
-
-1. The scheduler triggers `claude -p hi` at your configured interval
-2. Claude Code responds (keeping the rate limit window active)
-3. The dashboard shows ping results, next scheduled ping, and full terminal logs
-4. All config and history is persisted to disk so nothing is lost on restart
-
-## Deploying
-
-This is designed to run on any always-on server or container platform. You need:
+## Requirements
 
 - Node.js 20+
 - [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code) installed and authenticated
