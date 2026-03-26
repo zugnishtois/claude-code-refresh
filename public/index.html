@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude Refresh Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Login Screen -->
+  <div class="login-screen" id="loginScreen">
+    <div class="login-box">
+      <h1 data-i18n="title">Claude Code Refresh</h1>
+      <p data-i18n="subtitle" class="subtitle">Rate limit window pre-warmer</p>
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <input type="password" id="loginPassword" data-i18n-placeholder="password" placeholder="Password" autocomplete="current-password">
+        <button type="submit" class="btn btn-primary btn-full" data-i18n="loginButton">Sign In</button>
+        <p class="login-error hidden" id="loginError" data-i18n="wrongPassword">Wrong password</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Dashboard -->
+  <div class="container hidden" id="dashboard">
+    <header>
+      <div class="header-top">
+        <button class="lang-toggle" onclick="toggleLang()">
+          <span id="langLabel">עב</span>
+        </button>
+      </div>
+      <h1 data-i18n="title">Claude Code Refresh</h1>
+      <p class="subtitle" data-i18n="subtitle">Rate limit window pre-warmer</p>
+    </header>
+
+    <section class="status-cards">
+      <div class="card">
+        <div class="card-label" data-i18n="lastPing">Last Ping</div>
+        <div class="card-value" id="lastPingTime">--</div>
+        <div class="card-sub" id="lastPingStatus">--</div>
+      </div>
+      <div class="card highlight">
+        <div class="card-label" data-i18n="nextPingIn">Next Ping In</div>
+        <div class="card-value countdown" id="countdown">--:--:--</div>
+        <div class="card-sub" id="nextPingTime">--</div>
+      </div>
+      <div class="card">
+        <div class="card-label" data-i18n="status">Status</div>
+        <div class="card-value">
+          <span class="dot" id="statusDot"></span>
+          <span id="statusText">...</span>
+        </div>
+        <div class="card-sub" id="statusDetail">--</div>
+      </div>
+    </section>
+
+    <section class="actions">
+      <button id="btnPing" class="btn btn-primary" onclick="manualPing()" data-i18n="pingNow">Ping Now</button>
+      <button id="btnPause" class="btn btn-secondary" onclick="togglePause()" data-i18n="pause">Pause</button>
+    </section>
+
+    <section class="settings-panel">
+      <h2 data-i18n="settings">Settings</h2>
+      <div class="settings-form">
+        <div class="form-group">
+          <label data-i18n="mode">Mode</label>
+          <div class="radio-group">
+            <label><input type="radio" name="mode" value="interval" checked onchange="toggleMode()"> <span data-i18n="everyInterval">Every interval</span></label>
+            <label><input type="radio" name="mode" value="times" onchange="toggleMode()"> <span data-i18n="specificTimes">Specific times</span></label>
+          </div>
+        </div>
+
+        <div class="form-group" id="intervalGroup">
+          <div class="interval-inputs">
+            <div>
+              <label for="intervalHours" data-i18n="hours">Hours</label>
+              <input type="number" id="intervalHours" min="0" max="23" value="4">
+            </div>
+            <div>
+              <label for="intervalMins" data-i18n="minutes">Minutes</label>
+              <input type="number" id="intervalMins" min="0" max="59" value="5">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group hidden" id="timesGroup">
+          <label data-i18n="scheduledTimes">Scheduled Times</label>
+          <div id="timesList"></div>
+          <button class="btn btn-small" onclick="addTimeSlot()" data-i18n="addTime">+ Add Time</button>
+        </div>
+
+        <div class="form-group">
+          <label for="timezone" data-i18n="timezone">Timezone</label>
+          <select id="timezone"></select>
+        </div>
+
+        <button class="btn btn-primary" onclick="saveSettings()" data-i18n="saveSettings">Save Settings</button>
+      </div>
+    </section>
+
+    <section class="terminal-panel">
+      <div class="terminal-header">
+        <h2 data-i18n="terminal">Terminal</h2>
+        <button class="btn btn-small" onclick="clearTerminal()" data-i18n="clear">Clear</button>
+      </div>
+      <div class="terminal" id="terminal"></div>
+    </section>
+
+    <section class="history-panel">
+      <div class="history-header">
+        <h2 data-i18n="history">History</h2>
+        <button class="btn btn-small btn-danger" onclick="clearHistory()" data-i18n="clear">Clear</button>
+      </div>
+      <table id="historyTable">
+        <thead>
+          <tr>
+            <th data-i18n="time">Time</th>
+            <th data-i18n="trigger">Trigger</th>
+            <th data-i18n="status">Status</th>
+            <th data-i18n="duration">Duration</th>
+          </tr>
+        </thead>
+        <tbody id="historyBody"></tbody>
+      </table>
+      <button class="btn btn-small" id="btnLoadMore" onclick="loadMoreHistory()" style="display:none" data-i18n="loadMore">Load More</button>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

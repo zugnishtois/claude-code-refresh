@@ -1,0 +1,16 @@
+{
+  "name": "claude-rate-limit-warmer",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Pre-warms Claude Code rate limit window on a schedule",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "node-cron": "^3.0.3",
+    "uuid": "^10.0.0"
+  }
+}
