@@ -2,7 +2,7 @@
 
 Cut your Claude Code rate limit wait time from hours to minutes.
 
-![Dashboard](screenshot.png)
+![Dashboard](dashboard.png)
 
 ## The Problem
 
